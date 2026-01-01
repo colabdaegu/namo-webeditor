@@ -1,0 +1,363 @@
+<html>
+
+<head>
+<meta http-equiv="content-type" content="text/html; charset=euc-kr">
+<title>마우스를 왼쪽에</title>
+<meta name="generator" content="Namo WebEditor(Trial)">
+<script language="JavaScript">
+<!--
+function namosw_init_slide_layers()
+{
+  var layer;
+  var i;
+  var args = namosw_init_slide_layers.arguments;
+  var is_ns4 = navigator.appName.indexOf('Netscape', 0) != -1 && !document.getElementById;
+  var is_ns6 = navigator.appName.indexOf('Netscape', 0) != -1 && document.getElementById;
+
+  for (i = 0; i < args.length; i += 3) {
+      if (args[i] == '')
+        continue;
+      if (is_ns4) {
+	layer = document.layers[args[i]];
+        if (args[i+1] == 1)
+          layer.left = -layer.clip.width  + 5;
+        else if (args[i+1] == 2)
+          layer.top  = -layer.clip.height + 5;
+	layer._sl_dir    = (layer.top < 0) ? 'v' : ((layer.left < 0) ? 'h' : '');
+        if (layer._sl_dir == '') return;
+	layer._sl_maxpos = 0
+	layer._sl_minpos = (layer.top < 0) ? layer.top : layer.left;
+        layer._sl_speed  = args[i+2];
+        if (layer.document.namoswmenucontainer)
+          layer = layer.document.namoswmenucontainer;
+	if (layer.captureEvents)
+	  layer.captureEvents(Event.MOUSEOVER|Event.MOUSEOUT);
+      } else if (is_ns6) {
+        layer = document.getElementById(args[i]);
+        if (args[i+1] == 1) {
+          layer.style.left = - parseInt(layer.style.width) + 5;
+        }
+        else if (args[i+1] == 2)
+          layer.style.top  = - parseInt(layer.style.width) + 5;
+	layer._sl_dir    = (parseInt(layer.style.top) < 0) ? 'v' : ((parseInt(layer.style.left) < 0) ? 'h' : '');
+        if (layer._sl_dir == '') return;
+	layer._sl_maxpos = 0;
+	layer._sl_minpos = (parseInt(layer.style.top) < 0) ? parseInt(layer.style.top) : parseInt(layer.style.left);
+        layer._sl_speed  = args[i+2];
+      } else {
+	layer = document.all[args[i]];
+        if (args[i+1] == 1)
+          layer.style.pixelLeft = -layer.style.pixelWidth  + 5;
+        else if (args[i+1] == 2)
+          layer.style.pixelTop  = -layer.style.pixelHeight + 5;
+	layer._sl_dir    = (layer.style.pixelTop < 0) ? 'v' : ((layer.style.pixelLeft < 0) ? 'h' : '');
+        if (layer._sl_dir == '') return;
+	layer._sl_maxpos = 0;
+	layer._sl_minpos = (layer.style.pixelTop < 0) ? layer.style.pixelTop : layer.style.pixelLeft;
+        layer._sl_speed  = args[i+2];
+      }
+
+      layer.onmouseover  = namosw_sl_mouseover;
+      layer.onmouseout   = namosw_sl_mouseout;
+  }
+}
+
+function namosw_sl_mouseover() 
+{
+  var is_ns4 = navigator.appName.indexOf('Netscape', 0) != -1 && !document.getElementById;
+  var layer = this;
+  var name  = (is_ns4) ? layer.name : layer.id;
+  if (name == 'namoswmenucontainer') {
+    if (is_ns4) {		// redundant check
+      layer = layer.parentLayer;
+      name  = layer.name;
+    }
+  }
+  if (layer._up_interval)
+    return;
+  if (layer._down_interval) {
+    clearInterval(layer._down_interval);
+	layer._down_interval = 0;
+  }
+  layer._up_interval = setInterval("namosw_sl_mouseover2('" + name + "')", 50)
+}
+
+function namosw_sl_mouseout() 
+{
+  var is_ns4 = navigator.appName.indexOf('Netscape', 0) != -1 && !document.getElementById;
+  var layer = this;
+  var name  = (is_ns4) ? layer.name : layer.id;
+  if (name == 'namoswmenucontainer') {
+    if (is_ns4) {		// redundant check
+      layer = layer.parentLayer;
+      name  = layer.name;
+    }
+  }
+  if (layer._down_interval)
+    return;
+  if (layer._up_interval) {
+    clearInterval(layer._up_interval)
+	layer._up_interval = 0;
+  }
+  layer._down_interval = setInterval("namosw_sl_mouseout2('" + name + "')", 50)
+}
+
+function namosw_sl_mouseover2(name) 
+{
+  var is_ns4 = navigator.appName.indexOf('Netscape', 0) != -1 && !document.getElementById;
+  var is_ns6 = navigator.appName.indexOf('Netscape', 0) != -1 && document.getElementById;
+
+  var layer;
+  if (is_ns4) {
+    layer = document.layers[name];
+    if (layer._sl_dir == 'h' && layer.left < layer._sl_maxpos)
+      layer.left += layer._sl_speed;
+    else if (layer._sl_dir == 'v' && layer.top < layer._sl_maxpos)
+      layer.top += layer._sl_speed;
+    else if (layer._up_interval) {
+      clearInterval(layer._up_interval);
+	  layer._up_interval = 0;
+	}
+  } else if (is_ns6) {
+    layer = document.getElementById(name);
+    var left = parseInt(layer.style.left);
+    var top  = parseInt(layer.style.top);
+    if (layer._sl_dir == 'h' && left < layer._sl_maxpos) 
+      layer.style.left = left + layer._sl_speed;
+    else if (layer._sl_dir == 'v' && top < layer._sl_maxpos)
+      layer.style.top = top + layer._sl_speed;
+    else if (layer._up_interval) {
+      clearInterval(layer._up_interval);
+	  layer._up_interval = 0;
+    }
+  } else {
+    layer = document.all[name];
+    if (layer._sl_dir == 'h' && layer.style.pixelLeft < layer._sl_maxpos)
+      layer.style.pixelLeft += layer._sl_speed;
+    else if (layer._sl_dir == 'v' && layer.style.pixelTop < layer._sl_maxpos)
+      layer.style.pixelTop += layer._sl_speed;
+    else if (layer._up_interval) {
+      clearInterval(layer._up_interval);
+	  layer._up_interval = 0;
+    }
+  }
+}
+
+function namosw_sl_mouseout2(name) 
+{
+  var is_ns4 = navigator.appName.indexOf('Netscape', 0) != -1 && !document.getElementById;
+  var is_ns6 = navigator.appName.indexOf('Netscape', 0) != -1 && document.getElementById;
+  var layer;
+
+  if (is_ns4) {
+    layer = document.layers[name];
+    if (layer._sl_dir == 'h' && layer._sl_minpos < layer.left)
+      layer.left -= layer._sl_speed;
+    else if (layer._sl_dir == 'v' && layer._sl_minpos < layer.top)
+      layer.top  -= layer._sl_speed;
+    else if (layer._down_interval) {
+      clearInterval(layer._down_interval);
+	  layer._down_interval = 0;
+    }
+  } else if (is_ns6) {
+    layer = document.getElementById(name);
+    var left = parseInt(layer.style.left);
+    var top  = parseInt(layer.style.top);
+    if (layer._sl_dir == 'h' && layer._sl_minpos < left)
+      layer.style.left = left - layer._sl_speed;
+    else if (layer._sl_dir == 'v' && layer._sl_minpos < top)
+      layer.style.top = top - layer._sl_speed;
+    else if (layer._down_interval) {
+      clearInterval(layer._down_interval);
+	  layer._down_interval = 0;
+    }
+  } else { 
+    layer = document.all[name];
+    if (layer._sl_dir == 'h' && layer._sl_minpos < layer.style.pixelLeft)
+      layer.style.pixelLeft -= layer._sl_speed;
+    else if (layer._sl_dir == 'v' && layer._sl_minpos < layer.style.pixelTop)
+      layer.style.pixelTop -= layer._sl_speed;
+    else if (layer._down_interval) {
+      clearInterval(layer._down_interval);
+	  layer._down_interval = 0;
+    }
+  }
+}
+
+function namosw_menu_write(itemlist, width, layername, bgcolor, bdcolor, fontname, fontsize, textdeco, color, hitextdeco, hicolor, visible)
+{
+  var is_ns4 = navigator.appName.indexOf('Netscape', 0) != -1 && !document.getElementById;
+  var is_ns6 = navigator.appName.indexOf('Netscape', 0) != -1 && document.getElementById;
+
+  var i;
+  var layer, str;
+
+  if (layername == '')
+    return;
+  str = "";
+
+  for (i = 0; i < itemlist.length; i += 2) {
+    str += "<p style='margin-bottom:1;margin-top:5'>";
+    str += "<a href='" + itemlist[i+1] + "'";
+    if (itemlist.target) str += " target='" + itemlist.target[i/2] + "'";
+    str += " onmouseover=\"namosw_menu_mouseover(this, '" + hitextdeco + "', '" + hicolor + "');\" onmouseout=\"namosw_menu_mouseout(this);\" ";
+    str += "style='";
+    if (fontname != '') str += "font-family:" + fontname + ";";
+    if (fontsize != '') str += "font-size:" + fontsize + "pt;";
+    if (color    != '') str += "color:" + color + ";";
+    if (textdeco != '') str += "text-decoration:" + textdeco + ";";
+    str += "'>";
+    str += itemlist[i] + "</font></a>\n";
+  }
+   
+  if (is_ns4) {
+    layer = eval("document." + layername);
+    layer.document.open('text/html');
+    layer.document.writeln("<div id=\"namoswmenucontainer\" style=\"position:absolute; padding:4px; left:1px; top:1px; z-index:1;\">" + str + "</div>");
+    layer.document.close();
+    var layer2 = layer.document.namoswmenucontainer;
+    layer2.clip.width  = width-2;
+    layer2.clip.height = layer2.clip.height + 6;
+    layer2.bgColor     = bgcolor;
+    layer.clip.width  = width;
+    layer.clip.height = layer2.clip.height + 2;
+    layer.bgColor = bdcolor;
+    layer.visibility = visible ? 'show' : 'hide';
+  } else if (is_ns6) {
+    layer = document.getElementById(layername);
+    layer.innerHTML = str;
+    layer.style.width = width;
+    layer.style.padding = '4px';
+    layer.style.backgroundColor = bgcolor;
+    layer.style.borderColor = bdcolor;
+    layer.style.borderWidth = '1px';
+    layer.style.borderStyle = 'solid';
+    layer.style.visibility = visible ? 'visible' : 'hidden';
+  } else {
+    layer = document.all[layername];
+    layer.innerHTML = str;
+    layer.style.pixelWidth = width;
+    layer.style.padding = '4px';
+    layer.style.backgroundColor = bgcolor;
+    layer.style.borderColor = bdcolor;
+    layer.style.borderWidth = '1px';
+    layer.style.borderStyle = 'solid';
+    layer.style.visibility = visible ? 'visible' : 'hidden';
+  }
+}
+
+function namosw_menu_mouseover(el, td, color)
+{
+  if (document.all) {
+    el.oldtd    = el.style.textDecoration;
+    el.oldcolor = el.style.color;
+    el.style.textDecoration = td;
+    el.style.color = color;
+  }
+}
+
+function namosw_menu_mouseout(el)
+{
+  if (document.all) {
+    if (el.oldtd) {
+      el.style.textDecoration = el.oldtd;
+      el.style.color = el.oldcolor;
+    }
+  }
+}
+
+function namosw_popuplayer(layername, nsdoc)
+{
+  var is_ns4 = navigator.appName.indexOf('Netscape', 0) != -1 && !document.getElementById;
+  var is_ns6 = navigator.appName.indexOf('Netscape', 0) != -1 && document.getElementById;
+
+  var layer;
+  if (is_ns4) {
+    layer = eval(nsdoc+'.'+layername);
+    if (layer.visibility == 'show') {
+      namosw_hidelayer();
+    } else {
+      layer.visibility    = 'show';
+      window._popup_layer = layer;
+    }
+  } else if (is_ns6) {
+    layer = document.getElementById(layername);
+    if (layer.style.visibility == 'visible') {
+      namosw_hidelayer();
+    } else {
+      layer.style.visibility = 'visible';
+      window._popup_layer    = layer;
+      document.body._oldonclick = document.body.onclick;
+      setTimeout("document.body.onclick  = namosw_hidelayer;", 100);
+      event.cancelBubble     = true;
+    }
+  } else {
+    layer = eval('document.all.'+layername);
+    if (layer.style.visibility == 'visible') {
+      namosw_hidelayer();
+    } else {
+      layer.style.visibility = 'visible';
+      window._popup_layer    = layer;
+      document.body._oldonclick = document.body.onclick;
+      document.body.onclick  = namosw_hidelayer;
+      event.cancelBubble     = true;
+    }
+  }
+}
+
+function namosw_hidelayer()
+{
+  var is_ns4 = navigator.appName.indexOf('Netscape', 0) != -1 && !document.getElementById;
+  var is_ns6 = navigator.appName.indexOf('Netscape', 0) != -1 && document.getElementById;
+
+  if (is_ns4) {
+    if (window._popup_layer) {
+      window._popup_layer.visibility = 'hide';
+      window._popup_layer = 0;
+    }
+  } else {
+    if (window._popup_layer) {
+      window._popup_layer.style.visibility = 'hidden';
+      window._popup_layer = 0;
+    }
+    document.body.onclick = document.body._oldonclick;
+  }
+}
+
+function namosw_init_menu()
+{
+  var i, list, layer;
+
+  list = new Array();
+  list[list.length] = '검색엔진';
+  list[list.length] = '#';
+  list[list.length] = '야후';
+  list[list.length] = 'http://www.yahoo.com';
+  list[list.length] = '네이버';
+  list[list.length] = 'http://www.naver.com';
+  list.target = new Array();
+  list.target[list.target.length] = '_self';
+  list.target[list.target.length] = '_self';
+  list.target[list.target.length] = '_self';
+  namosw_menu_write(list, 200, 'layer1', 'lightyellow', 'black','배달의민족 도현', '14', 'none', '', 'underline', 'fuchsia', true);
+}
+
+function namosw_ns_resize()
+{
+  window.history.go(0);
+}
+
+// -->
+</script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="purple" alink="red" OnLoad="namosw_init_menu(); namosw_init_slide_layers('layer1', 1, 5);" OnResize="namosw_ns_resize();">
+<p>마우스를 왼쪽에</p>
+<p>가져가 보세요</p>
+<div id="layer1" style="width:200px; height:200px; position:absolute; left:20px; top:126px; z-index:1;">
+    <p>&nbsp;</p>
+</div>
+<p>&nbsp;</p>
+</body>
+
+</html>
